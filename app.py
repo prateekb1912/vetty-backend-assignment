@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, render_template_string
+from flask import Flask, render_template, render_template_string, request
 
 from utils import read_file
 
@@ -20,7 +20,13 @@ def internal_server_error(e):
 def display_file(filename = 'file1.txt'):
 
     try:
-        content = read_file(os.path.join(app.static_folder, filename))
+        file_path = os.path.join(app.static_folder, filename)
+
+        startline = int(request.args.get("start", 1))
+        endline = int(request.args.get("end", -1))
+
+
+        content = read_file(file_path, startline, endline)
         return render_template_string(content)
 
     except FileNotFoundError:
